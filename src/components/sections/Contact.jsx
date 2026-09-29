@@ -23,8 +23,8 @@ const socials = [
   {
     icon: Mail,
     label: 'Email',
-    handle: 'alexfloch777@gmail.com',
-    href: 'alexfloch777@gmail.com',
+    handle: 'alex.floch777@gmail.com',
+    href: 'mailto:alexfloch777@gmail.com',
     color: '#F59E0B',
     desc: 'Для получения официальной информации',
   },
@@ -46,18 +46,28 @@ export default function Contact() {
     return e
   }
 
-  const handleSubmit = async () => {
-    const e = validate()
-    if (Object.keys(e).length > 0) {
-      setErrors(e)
-      return
-    }
-    setErrors({})
-    setStatus('loading')
-    await new Promise((r) => setTimeout(r, 1600))
-    setStatus('success')
+ const handleSubmit = async () => {
+  const e = validate()
+  if (Object.keys(e).length > 0) {
+    setErrors(e)
+    return
   }
-
+  setErrors({})
+  setStatus('loading')
+  try {
+    const res = await fetch('https://formspree.io/f/xdekbwgy', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(form),
+    })
+    setStatus(res.ok ? 'success' : 'error')
+  } catch {
+    setStatus('error')
+  }
+}
   const handleChange = (field) => (ev) => {
     setForm((f) => ({ ...f, [field]: ev.target.value }))
     if (errors[field]) setErrors((e) => ({ ...e, [field]: '' }))
@@ -227,7 +237,11 @@ export default function Contact() {
                       </>
                     )}
                   </motion.button>
-
+                    {status === 'error' && (
+                      <p className="font-mono text-xs text-red-400 text-center">
+                         Не удалось отправить. Напишите мне в Telegram или на почту.
+                      </p>
+                    )}
                   <p className="font-mono text-xs text-slate-600 text-center">
                     Не спамьте. Я отвечу на каждое сообщение.
                   </p>

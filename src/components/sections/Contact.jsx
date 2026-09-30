@@ -24,7 +24,7 @@ const socials = [
     icon: Mail,
     label: 'Email',
     handle: 'alex.floch777@gmail.com',
-    href: 'mailto:alexfloch777@gmail.com',
+    href: 'mailto:alex.floch777@gmail.com',
     color: '#F59E0B',
     desc: 'Для получения официальной информации',
   },
